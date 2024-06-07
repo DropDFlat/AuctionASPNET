@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34622.214
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auction.Web", "Auction\Auction.Web.csproj", "{0D7DC6C1-04E0-40E5-892E-BE530B64F68A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auction.DAL", "DAL\Auction.DAL.csproj", "{9F5C7204-E4AE-4053-9008-BDC8BCA285AA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auction.Model", "Model\Auction.Model.csproj", "{D13279B0-C940-4594-A730-9DDCA3397BB9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0D7DC6C1-04E0-40E5-892E-BE530B64F68A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D7DC6C1-04E0-40E5-892E-BE530B64F68A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D7DC6C1-04E0-40E5-892E-BE530B64F68A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D7DC6C1-04E0-40E5-892E-BE530B64F68A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F5C7204-E4AE-4053-9008-BDC8BCA285AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F5C7204-E4AE-4053-9008-BDC8BCA285AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F5C7204-E4AE-4053-9008-BDC8BCA285AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F5C7204-E4AE-4053-9008-BDC8BCA285AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D13279B0-C940-4594-A730-9DDCA3397BB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D13279B0-C940-4594-A730-9DDCA3397BB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D13279B0-C940-4594-A730-9DDCA3397BB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D13279B0-C940-4594-A730-9DDCA3397BB9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D3547051-13BD-438B-9260-A037FC25D5D7}
+	EndGlobalSection
+EndGlobal

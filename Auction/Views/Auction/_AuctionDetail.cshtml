@@ -1,0 +1,67 @@
+﻿@model Auction.Web.Models.AuctionDetailsViewModel
+
+<h4>Auction</h4>
+<hr />
+<dl class="dl-horizontal">
+	<dt>
+		ID
+	</dt>
+	<dd>
+		@Html.DisplayFor(model => model.Auction.Id)
+	</dd>
+	<dt>
+		Article Name
+	</dt>
+	<dd>
+		@Html.DisplayFor(model => model.Auction.Article.name)
+	</dd>
+	<dt>
+		Article Description
+	</dt>
+	<dd>
+		@Html.DisplayFor(model => model.Auction.Article.description)
+	</dd>
+	<dt>
+		Images
+	</dt>
+	<div class="col-md-4" id="uploaded-files">
+	<dl class="dl-vertical">
+			@Html.Partial("_ImageListNoDelete", Model.Auction.Article.Images)
+	</dl>
+	</div>
+	<dt>
+		Seller Name
+	</dt>
+	<dd>
+		@Html.DisplayFor(model => model.Auction.Article.Seller.UserName)
+	</dd>
+	<dt>
+		Highest Bid
+	</dt>
+	<dd>
+		@if (Model.MaxBidAmount.HasValue)
+		{
+			@Model.MaxBidAmount.Value.ToString("C")
+		}
+		else
+		{
+			<span>No bids yet</span>
+		}
+	</dd>
+	<dt>Winner</dt>
+	<dd>
+		@if (Model.Auction.Winner != null)
+		{
+			@Model.Auction.Winner.UserName
+		}
+		else
+		{
+			<span>No winner yet</span>
+		}
+	</dd>
+</dl>
+
+<script>
+
+
+</script>

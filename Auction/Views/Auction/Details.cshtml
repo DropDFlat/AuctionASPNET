@@ -1,0 +1,71 @@
+﻿@model Auction.Web.Models.AuctionDetailsViewModel
+@{
+	ViewData["Title"] = "Details";
+	var auctionId = ViewBag.id;
+
+}
+
+<h2>Details</h2>
+
+@if (Model != null)
+{
+	<nav aria-label="breadcrumb">
+	<ol class="breadcrumb">
+		<li><a asp-action="Index">Auction List</a></li>
+		<li class="active">@Model.Auction.Article.name</li>
+	</ol>
+	</nav>
+	<div class="row" id="partialViewContainer">
+		<partial name="_AuctionDetail" />
+
+		<div class="col md-2">
+			<a asp-action="Bid" asp-route-id="@Model.Auction.Id" class="btn btn-primary">Bid</a>
+		
+		@if (Model.isUserOwner)
+		{
+			
+			<a asp-action="Edit" asp-route-id="@Model.Auction.Id" class="btn btn-primary">Edit</a>
+				@if (Model.Auction.Status == "Active")
+				{
+					<a asp-action="EndAuctionEarly" asp-route-id="@Model.Auction.Id" class="btn btn-warning">End Early</a>
+					<a asp-action="Delete" asp-route-id="@Model.Auction.Id" class="btn btn-danger">Delete</a>
+				}
+				
+			}
+		
+		</div>
+	</div>
+
+}
+else
+{
+	<div class="alert alert-danger">
+		Auction not found.
+	</div>
+
+}
+
+@section Scripts {
+	<script>
+		$(document).ready(function () {
+			var auctionId = "@Model.Auction.Article.id";
+
+			loadAttachments(auctionId);
+
+			function loadAttachments(auctionId) {
+				$.ajax({
+					url: '@Url.Action("GetAttachmentsNoDelete", "Auction")',
+					type: 'GET',
+					data: { articleId: auctionId },
+					success: function (response) {
+						$('#uploaded-files').html(response);
+					},
+					error: function (xhr, status, error) {
+						console.error("Error loading attachments:", xhr.responseText);
+					}
+				});
+			}
+		});
+		
+	</script>
+}

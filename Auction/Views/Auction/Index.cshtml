@@ -1,0 +1,46 @@
+﻿@model List<Aukcija>
+
+@{
+	ViewData["Title"] = "Home Page";
+}
+@section Scripts{
+	<script>
+		$(document).ready(function () {
+			initializeDatePickers();
+			$("#filter-button").on("click", function (e) {
+				e.preventDefault();
+
+				var form = $("#filter-form");
+				var url = form.attr("action");
+
+				$.ajax({
+					type: "POST",
+					url: url,
+					data: form.serialize(),
+					success: function (response) {
+						$("#index-table").html(response);
+					},
+					error: function (xhr, status, error) {
+						console.error(xhr.responseText);
+					}
+				});
+			});
+		});
+
+		function initializeDatePickers() {
+			$('.inp-datepicker').datepicker({
+				format: 'dd/mm/yyyy',
+				autoclose: true,
+				todayHighlight: true
+			});
+		}
+	</script>
+}
+<h1>Auction List</h1>
+<div style="margin-top: 20px; margin-bottom: 10px;">
+	<partial name="_AuctionFilter" model="new AuctionFilterModel()" />
+</div>
+
+<div id="index-table">
+<partial name="_IndexTable" model="Model"/>
+</div>

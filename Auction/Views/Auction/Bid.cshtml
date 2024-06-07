@@ -1,0 +1,64 @@
+﻿@model Auction.Web.Models.BidViewModel
+
+@section Scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // Function to check auction status
+            function checkAuctionStatus() {
+                var auctionId = @Model.AuctionId; // Get the auction ID from the model
+
+                // Send AJAX request to check auction status
+                $.ajax({
+                    url: '/Auction/CheckAuctionStatus/' + auctionId,
+                    type: 'GET',
+                    success: function (result) {
+                        if (result.isOver) {
+                            // Auction is over, display popup and redirect
+                            alert('The auction is over.');
+                            window.location.href = '/Auction/Details/' + auctionId;
+                        }
+                        if (result.isPreparing) {
+                            alert('The auction has not begun yet');
+                            window.location.href = '/Auction/Details/' + auctionId;
+                        }
+                    },
+                    error: function () {
+                        console.error('Error occurred while checking auction status.');
+                    }
+                });
+            }
+
+            // Call the function when the page loads
+            checkAuctionStatus();
+        });
+        </script>
+}
+<h2>Place a Bid</h2>
+<div>
+    @if(Model.MaxBidAmount.HasValue){
+        @Html.Partial("_AuctionDetail", new AuctionDetailsViewModel {MaxBidAmount = Model.MaxBidAmount, Auction = Model.Aukcija})
+    }else{
+        @Html.Partial("_AuctionDetail", new AuctionDetailsViewModel {Auction = Model.Aukcija})
+    }        
+    
+</div>
+
+<form asp-action="PlaceBid" method="post">
+    <input type="hidden" asp-for="AuctionId" />
+    @if (Model.HasExistingBid)
+    {
+        <div class="form-group">You have already place a bid <br />Your bid: @Model.Amount.ToString("C")€<br />You can change your bid below</div>
+    }
+    <div class="form-group">
+        <label asp-for="Amount" class="control-label">Bid Amount</label>
+        <input asp-for="Amount" class="form-control" />
+        <span asp-validation-for="Amount" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label class="control-label">Payment Method</label>
+        <select asp-for="PaymentId" asp-items="ViewBag.PaymentMethods" class="form-control"></select>
+        <span asp-validation-for="PaymentId" class="text-danger"></span>
+    </div>
+    <input type="hidden" asp-for="AuctionId" />
+    <button type="submit" class="btn btn-primary">Submit Bid</button>
+    </form>

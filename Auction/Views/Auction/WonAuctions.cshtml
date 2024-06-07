@@ -1,0 +1,20 @@
+﻿@model Auction.Web.Models.WonAuctionsViewModel
+
+<h2>Auctions You've Won</h2>
+<div class="row">
+    <div style="margin-top: 20px; margin-bottom: 10px;">
+        <partial name="_AuctionFilter" model="new AuctionFilterModel()" />
+    </div>
+
+@if (Model.WonAuctions.Any())
+{
+
+        <div id="index-table">
+            <partial name="_IndexTable" model="Model.WonAuctions" />
+        </div>
+}
+else
+{
+    <p>You haven't won any auctions yet.</p>
+}
+</div>

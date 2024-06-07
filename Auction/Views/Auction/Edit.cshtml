@@ -1,0 +1,96 @@
+﻿@model Auction.Web.Models.AuctionEditViewModel
+
+@{
+    ViewData["Title"] = "Edit Auction";
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">Auction List</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Edit Auction</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <input type="hidden" asp-for="AuctionId" />
+            <partial name="_CreateEdit" />
+            <button type="submit" class="btn btn-primary">Edit Auction</button>
+        </form>
+        <div class="col-md-6">
+            <label class="control-label">File Upload</label>
+            <form id="fileUpload" asp-controller="Auction" asp-action="UploadImage" asp-route-auctionId="@Model.AuctionId" enctype="multipart/form-data" class="dropzone"></form>
+        </div>
+        <div class="col-md-4" id="uploaded-files">
+            @Html.Partial("_ImageList", Model.Images)
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.2/min/dropzone.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.2/min/dropzone.min.css" rel="stylesheet" />
+    <script>
+        Dropzone.options.fileUpload = {
+            acceptedFiles: ".png,.jpg,.jpeg,.jfif",
+            maxFiles: 100,
+            success: function (file, response) {
+                console.log({ file, response });
+                loadAttachments("@Model.AuctionId");
+            },
+            error: function (file, response) {
+                console.error({ file, response });
+                alert("Upload failed: " + response);
+            },
+            init: function () {
+                this.on("error", function (file, response) {
+                    console.error("Dropzone error:", response);
+                });
+                this.on("sending", function (file, xhr, formData) {
+                    console.log("Sending file:", file);
+                });
+                this.on("success", function (file, response) {
+                    console.log("Upload successful:", response);
+                });
+            }
+        };
+
+        $(document).ready(function () {
+            var auctionId = "@Model.AuctionId";
+            var articleId = "@Model.ArticleId";
+            loadAttachments(articleId);
+
+            function loadAttachments(articleId) {
+                $.ajax({
+                    url: '@Url.Action("GetAttachments", "Auction")',
+                    type: 'GET',
+                    data: { articleId: articleId },
+                    success: function (response) {
+                        $('#uploaded-files').html(response);
+                        $(".deleteAttachment").on("click", function () {
+                            var attachmentId = $(this).data("id");
+
+                            $.ajax({
+                                url: "@Url.Action("DeleteAttachment", "Auction")",
+                                type: 'POST',
+                                data: { id: attachmentId, articleId: articleId },
+                                success: function (response) {
+                                    console.log("Attachment deleted:", response);
+                                    loadAttachments(articleId);
+                                },
+                                error: function (xhr, status, error) {
+                                    console.error("Delete error:", xhr.responseText);
+                                }
+                            });
+                        });
+
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error loading attachments:", xhr.responseText);
+                    }
+                });
+            }
+        });
+    </script>
+}

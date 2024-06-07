@@ -1,0 +1,31 @@
+﻿@model List<Aukcija>
+
+<table style="margin-top: 20px;" class="table table-condensed">
+	<thead>
+		<tr>
+			<th>Article Name</th>
+			<th>Article Description</th>
+			<th>Start Date</th>
+			<th>End Date</th>
+			<th>Starting Price</th>
+			<th>Status</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model)
+		{
+			<tr>
+				<td><a asp-action="Details" asp-route-id="@item.Id">@item.Article.name</a></td>
+				<td>@item.Article.description</td>
+				<td>@item.StartTime</td>
+				<td>@item.EndTime</td>
+				<td>@item.Article.startingPrice €</td>
+				<td>@item.Status</td>
+				<td>
+					<a asp-action="Bid" asp-route-id="@item.Id">[bid]</a>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>

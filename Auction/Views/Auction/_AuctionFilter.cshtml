@@ -1,0 +1,49 @@
+﻿@using Auction.Web.Models
+
+@model AuctionFilterModel
+@{
+	// Malo hacky, ali funkcionira dobro za sve zapadne kulture, primjer moćnijih kultura su US ili RH.
+	var pattern = System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern.ToLower();
+	pattern = pattern.Replace("DD", "D").Replace("D", "DD");
+	pattern = pattern.Replace("MM", "M").Replace("M", "MM");
+}
+<form action="@Url.Action("IndexAjax")" method="post" id="filter-form">
+	<div class="row">
+		<div class="col">
+			<label class="control-label">Article Name</label>
+			<input asp-for="article.name" class="form-control" type="text" />
+		</div>
+		<div class="col">
+			<label class="control-label">Article Description</label>
+			<input asp-for="article.description" class="form-control" type="text" />
+		</div>
+		<div class="col">
+			<label class="control-label">Start After Date</label>
+		<div class="input-group date inp-datepicker" data-format="@pattern">
+
+			<input type="text" class="form-control" asp-for="startDate"/>
+			<span class="input-group-append">
+				<span class="input-group-text bg-light d-block">
+					<i class="fa fa-calendar"></i>
+				</span>
+			</span>
+		</div>
+		</div>
+		<div class="col">
+			<label class="control-label">Ends Before Date</label>
+		<div class="input-group date inp-datepicker" data-format="@pattern">
+
+			<input type="text" class="form-control" asp-for="endDate" />
+			<span class="input-group-append">
+				<span class="input-group-text bg-light d-block">
+					<i class="fa fa-calendar"></i>
+				</span>
+			</span>
+		</div>
+		</div>
+		<div class="col" style="margin-top: 24px;">
+			<button type="button" id="filter-button" class="btn btn-outline-info">Search</button>
+			<a asp-action="Create" class="btn btn-success">Create</a>
+		</div>
+	</div>
+</form>
