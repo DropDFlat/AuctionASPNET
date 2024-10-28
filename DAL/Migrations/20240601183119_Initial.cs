@@ -287,7 +287,7 @@ namespace Auction.DAL.Migrations
 
             migrationBuilder.InsertData(
                 table: "paymentMethods",
-                columns: new[] { "Id", "Name" },
+                columns: new[] { "Id", "name" },
                 values: new object[,]
                 {
                     { 1, "Paypal" },

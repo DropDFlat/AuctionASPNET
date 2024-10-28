@@ -4,6 +4,7 @@
     ViewData["Title"] = "Edit Auction";
 }
 
+
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a asp-action="Index">Auction List</a></li>
@@ -32,6 +33,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.2/min/dropzone.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.2/min/dropzone.min.css" rel="stylesheet" />
     <script>
+            
         Dropzone.options.fileUpload = {
             acceptedFiles: ".png,.jpg,.jpeg,.jfif",
             maxFiles: 100,
@@ -57,6 +59,7 @@
         };
 
         $(document).ready(function () {
+
             var auctionId = "@Model.AuctionId";
             var articleId = "@Model.ArticleId";
             loadAttachments(articleId);
@@ -91,6 +94,30 @@
                     }
                 });
             }
+            // Function to check auction status
+            function checkAuctionStatus() {
+                var auctionId = @Model.AuctionId; // Get the auction ID from the model
+
+                // Send AJAX request to check auction status
+                $.ajax({
+                    url: '/Auction/CheckAuctionStatus/' + auctionId,
+                    type: 'GET',
+                    success: function (result) {
+                        if (result.isOver) {
+                            // Auction is over, display popup and redirect
+                            alert('The auction is over.');
+                            window.location.href = '/Auction/Details/' + auctionId;
+                        }
+
+                    },
+                    error: function () {
+                        console.error('Error occurred while checking auction status.');
+                    }
+                });
+            }
+
+            // Call the function when the page loads
+            checkAuctionStatus();
         });
     </script>
 }

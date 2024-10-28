@@ -38,13 +38,11 @@ namespace Auction.Web.Controllers
 
 			var clientQuery = _context.Aukcijas.Include(p => p.Article).AsQueryable();
 
-			//Primjer iterativnog građenja upita - dodaje se "where clause" samo u slučaju da je parametar doista proslijeđen.
-			//To rezultira optimalnijim stablom izraza koje se kvalitetnije potencijalno prevodi u SQL
-			if (!string.IsNullOrWhiteSpace(filter.article.name))
-				clientQuery = clientQuery.Where(p => (p.Article.name).ToLower().Contains(filter.article.name.ToLower()));
+			if (!string.IsNullOrWhiteSpace(filter.article.Name))
+				clientQuery = clientQuery.Where(p => (p.Article.Name).ToLower().Contains(filter.article.Name.ToLower()));
 
-			if (!string.IsNullOrWhiteSpace(filter.article.description))
-				clientQuery = clientQuery.Where(p => p.Article.description.ToLower().Contains(filter.article.description.ToLower()));
+			if (!string.IsNullOrWhiteSpace(filter.article.Description))
+				clientQuery = clientQuery.Where(p => p.Article.Description.ToLower().Contains(filter.article.Description.ToLower()));
 
 			if (filter.startDate != DateTime.MinValue)
 				clientQuery = clientQuery.Where(p => p.StartTime > filter.startDate);
@@ -71,9 +69,9 @@ namespace Auction.Web.Controllers
                 var user = await _userManager.GetUserAsync(User);
                 var article = new Article
                 {
-                    name = model.Name,
-                    description = model.Description,
-                    startingPrice = model.StartingPrice,
+                    Name = model.Name,
+                    Description = model.Description,
+                    StartingPrice = model.StartingPrice,
                     SellerId = user.Id
                 };
 
@@ -95,6 +93,7 @@ namespace Auction.Web.Controllers
             return View(model);
         }
 		[HttpGet]
+		[AllowAnonymous]
 		public async Task<IActionResult> Details(int? id = null)
 		{
 			var auction = await _context.Aukcijas
@@ -172,7 +171,7 @@ namespace Auction.Web.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				var auction = _context.Aukcijas.Find(model.AuctionId);
+				var auction = _context.Aukcijas.Include(a => a.Article).Include(a => a.Bids).FirstOrDefault(a => a.Id == model.AuctionId);
 				if (auction == null)
 				{
 					return NotFound();
@@ -183,6 +182,16 @@ namespace Auction.Web.Controllers
 				{
 					return Unauthorized();
 				}
+
+				var highestBid = auction.Bids.OrderByDescending(b => b.BidAmount).FirstOrDefault();
+				var highestBidAmount = highestBid?.BidAmount ?? auction.Article.StartingPrice;
+
+				if (model.Amount < auction.Article.StartingPrice || model.Amount <= highestBidAmount)
+				{
+					TempData["ErrorMessage"] = "Your bid must be higher than the starting bid and the current highest bid.";
+					return RedirectToAction("Bid", new { id = model.AuctionId });
+				}
+
 				var existingBid = await _context.Bids.Include(b => b.AuctionUser).FirstOrDefaultAsync(b => b.AuctionId == model.AuctionId && b.AuctionUser.Id == user.Id);
 				if(existingBid != null)
 				{
@@ -191,12 +200,13 @@ namespace Auction.Web.Controllers
 				}
 				else
 				{
+					
 					var bid = new Bid
 					{
 						BidAmount = model.Amount,
 						AuctionId = model.AuctionId,
 						BidderId = user.Id,
-						paymentMethodId = model.PaymentId
+						PaymentMethodId = model.PaymentId
 					};
 					_context.Add(bid);
 				}
@@ -218,9 +228,9 @@ namespace Auction.Web.Controllers
 				StartTime = model.StartTime,
 				EndTime = model.EndTime,
 				ArticleId = model.ArticleId,
-				Name = model.Article.name,
-				Description = model.Article.description,
-				StartingPrice = model.Article.startingPrice,
+				Name = model.Article.Name,
+				Description = model.Article.Description,
+				StartingPrice = model.Article.StartingPrice,
 				Images = model.Article.Images
 				
 			};
@@ -242,9 +252,9 @@ namespace Auction.Web.Controllers
 
 			auction.StartTime = viewModel.StartTime;
 			auction.EndTime = viewModel.EndTime;
-			auction.Article.name = viewModel.Name;
-			auction.Article.description = viewModel.Description;
-			auction.Article.startingPrice = viewModel.StartingPrice;
+			auction.Article.Name = viewModel.Name;
+			auction.Article.Description = viewModel.Description;
+			auction.Article.StartingPrice = viewModel.StartingPrice;
 
 			await _context.SaveChangesAsync();
 			return RedirectToAction(nameof(Index));
@@ -266,8 +276,7 @@ namespace Auction.Web.Controllers
 			// Remove related bids
 			_context.Bids.RemoveRange(auction.Bids);
 
-			// Remove the auction article
-			_context.Articles.Remove(auction.Article);
+
 
 			// Remove the auction
 			_context.Aukcijas.Remove(auction);
@@ -276,6 +285,7 @@ namespace Auction.Web.Controllers
 
 			return RedirectToAction(nameof(Index));
 		}
+
 		[HttpPost]
 		public async Task<ActionResult> UploadImage(int auctionId, IFormFile file)
 		{
@@ -297,8 +307,8 @@ namespace Auction.Web.Controllers
                 await file.CopyToAsync(stream);
             }
 			
-			var article = await _context.Articles.Include(c => c.Images).Include(c => c.aukcija).FirstOrDefaultAsync(c => c.aukcija.Id == auctionId);
-			article.Images.Add(new Pic { FilePath = "/uploads/" + uniqueFileName, ArticleId = article.id });
+			var article = await _context.Articles.Include(c => c.Images).Include(c => c.Aukcija).FirstOrDefaultAsync(c => c.Aukcija.Id == auctionId);
+			article.Images.Add(new Pic { FilePath = "/uploads/" + uniqueFileName, ArticleId = article.Id });
 
 
             await _context.SaveChangesAsync();

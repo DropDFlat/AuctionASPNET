@@ -1,5 +1,7 @@
 ﻿@model Auction.Web.Models.AuctionArticleViewModel
 
+
+
 <h2>Create Auction</h2>
 
 
@@ -28,8 +30,8 @@
 }
     <div class="form-group">
         <label class="control-label">Auction Start Date</label>
-        <div class="input-group date inp-datepicker">
-        <input type="text" class="form-control" asp-for="StartTime" id="startTimePicker" data-format="@pattern" />
+        <div class="input-group date inp-datepicker" data-format="@pattern">
+        <input type="text" class="form-control" asp-for="StartTime"  />
             <span class="input-group-append">
                 <span class="input-group-text bg-light d-block">
                     <i class="fa fa-calendar"></i>
@@ -41,8 +43,8 @@
 
     <div class="form-group">
         <label class="control-label">Auction End Date</label>
-        <div class="input-group date inp-datepicker">
-        <input type="text" class="form-control" asp-for="EndTime" id="endTimePicker" data-format="@pattern" />
+    <div class="input-group date inp-datepicker" data-format="@pattern">
+        <input type="text" class="form-control" asp-for="EndTime"  />
             <span class="input-group-append">
                 <span class="input-group-text bg-light d-block">
                     <i class="fa fa-calendar"></i>
@@ -53,14 +55,4 @@
     </div>
 
 
-@section Scripts {
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet" />
 
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-
-}

@@ -13,8 +13,8 @@ namespace Auction.Model
     {
 
         public string? Address { get; set; }
-        public ICollection<Bid>? bids { get; set; }
-        public ICollection<Article>? articles { get; set; }
+        public ICollection<Bid>? Bids { get; set; }
+        public ICollection<Article>? Articles { get; set; }
 
         public ICollection<Aukcija>? WonAuctions { get; set; }
     }

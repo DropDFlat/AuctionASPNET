@@ -16,9 +16,9 @@ namespace Auction.Model
 
 		public string FilePath
 		{ get; set; }
-		[ForeignKey(nameof(Article))]
+		[ForeignKey(nameof(global::Model.Article))]
 		public int ArticleId { get; set; }
-		public Article article { get; set; }
+		public Article Article { get; set; }
 
 
 

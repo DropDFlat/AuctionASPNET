@@ -51,7 +51,7 @@ namespace Auction.DAL
 			.HasForeignKey(a => a.WinnerId);
 
 			modelBuilder.Entity<Article>()
-        .Property(i => i.startingPrice)
+        .Property(i => i.StartingPrice)
         .HasColumnType("decimal(10, 2)");
 
 
