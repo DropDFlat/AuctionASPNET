@@ -13,13 +13,13 @@
 		Article Name
 	</dt>
 	<dd>
-		@Html.DisplayFor(model => model.Auction.Article.name)
+		@Html.DisplayFor(model => model.Auction.Article.Name)
 	</dd>
 	<dt>
 		Article Description
 	</dt>
 	<dd>
-		@Html.DisplayFor(model => model.Auction.Article.description)
+		@Html.DisplayFor(model => model.Auction.Article.Description)
 	</dd>
 	<dt>
 		Images
@@ -36,12 +36,18 @@
 		@Html.DisplayFor(model => model.Auction.Article.Seller.UserName)
 	</dd>
 	<dt>
+		Starting Price
+	</dt>
+	<dd>
+		@Html.DisplayFor(model => model.Auction.Article.StartingPrice) €
+	</dd>
+	<dt>
 		Highest Bid
 	</dt>
 	<dd>
 		@if (Model.MaxBidAmount.HasValue)
 		{
-			@Model.MaxBidAmount.Value.ToString("C")
+			@Model.MaxBidAmount.Value.ToString("C", System.Globalization.CultureInfo.CreateSpecificCulture("fr-FR"))
 		}
 		else
 		{
@@ -61,7 +67,3 @@
 	</dd>
 </dl>
 
-<script>
-
-
-</script>

@@ -12,20 +12,20 @@ namespace Model
     public class Article
     {
         [Key]
-        public int id {  get; set; }
+        public int Id {  get; set; }
         [Required]
-        public string name { get; set; }
-        public string description { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
         [Required]
-        public decimal startingPrice { get; set; }
+        public decimal StartingPrice { get; set; }
 
         [ForeignKey(nameof(ApplicationUser))]
         public string SellerId { get; set; }
         public ApplicationUser Seller { get; set; }
 
-        [ForeignKey(nameof(Aukcija))]
+        [ForeignKey(nameof(Model.Aukcija))]
         public int? AuctionId { get; set;}
-        public Aukcija? aukcija { get; set; }
+        public Aukcija? Aukcija { get; set; }
 
         public ICollection<Pic>? Images { get; set; } = new List<Pic>();
     }

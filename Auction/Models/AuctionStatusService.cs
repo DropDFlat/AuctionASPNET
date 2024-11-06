@@ -24,7 +24,7 @@ namespace Auction.Web.Models
 		{
 			using (var scope = _scopeFactory.CreateScope())
 			{
-				var context = scope.ServiceProvider.GetRequiredService<AuctionDbContext>(); // Replace with your DbContext
+				var context = scope.ServiceProvider.GetRequiredService<AuctionDbContext>();
 
 				var currentDate = DateTime.UtcNow;
 				var auctionsToComplete = context.Aukcijas.Include(a => a.Bids)

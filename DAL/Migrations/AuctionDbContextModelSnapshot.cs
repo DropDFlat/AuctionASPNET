@@ -364,7 +364,7 @@ namespace Auction.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Name")
+                    b.Property<string>("name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -376,17 +376,17 @@ namespace Auction.DAL.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "Paypal"
+                            name = "Paypal"
                         },
                         new
                         {
                             Id = 2,
-                            Name = "Credit Card"
+                            name = "Credit Card"
                         },
                         new
                         {
                             Id = 3,
-                            Name = "BTC"
+                            name = "BTC"
                         });
                 });
 

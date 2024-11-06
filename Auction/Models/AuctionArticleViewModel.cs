@@ -19,10 +19,12 @@ namespace Auction.Web.Models
 		[DataType(DataType.Currency)]
 		public decimal StartingPrice { get; set; }
         [Required(ErrorMessage = "Set a start date")]
+        [DataType(DataType.Date)]
         [AuctionDateValidation]
         public DateTime StartTime { get; set; }
 
         [Required(ErrorMessage = "Set an end date")]
+        [DataType(DataType.Date)]
         [AuctionDateValidation]
         public DateTime EndTime { get; set; }
 

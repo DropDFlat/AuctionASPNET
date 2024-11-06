@@ -3,6 +3,12 @@
 @section Scripts{
     <script type="text/javascript">
         $(document).ready(function () {
+
+            var errorMessage = '@TempData["ErrorMessage"]';
+            if (errorMessage) {
+                alert(errorMessage);
+            }
+
             // Function to check auction status
             function checkAuctionStatus() {
                 var auctionId = @Model.AuctionId; // Get the auction ID from the model
@@ -27,6 +33,7 @@
                     }
                 });
             }
+
 
             // Call the function when the page loads
             checkAuctionStatus();

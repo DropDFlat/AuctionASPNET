@@ -14,10 +14,8 @@ namespace Model
         [Key]
         public int Id { get; set; }
         [Required]
-        [DataType(DataType.Date)]
         public DateTime StartTime { get; set; }
         [Required]
-        [DataType(DataType.Date)]
         public DateTime EndTime { get; set; }
         [ForeignKey(nameof(Article))]
         public int ArticleId { get; set; }
@@ -28,7 +26,7 @@ namespace Model
         [ForeignKey(nameof(ApplicationUser))]
         public string? WinnerId { get; set; }
 
-        public  ApplicationUser Winner { get; set; }
+        public  ApplicationUser? Winner { get; set; }
 
 
     }
