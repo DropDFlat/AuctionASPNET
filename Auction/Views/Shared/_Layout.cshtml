@@ -72,7 +72,10 @@
         });
 
         function initializeDatePickers() {
+            const dateFormat = "@System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern"
+                .toLowerCase().replace("mm", "mm").replace("dd", "dd").replace("yyyy", "yyyy");
             $('.inp-datepicker input').datepicker({
+                format: dateFormat,
                 autoclose: true,
                 todayHighlight: true
             });
