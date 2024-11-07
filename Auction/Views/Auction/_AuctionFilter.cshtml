@@ -2,7 +2,6 @@
 
 @model AuctionFilterModel
 @{
-	// Malo hacky, ali funkcionira dobro za sve zapadne kulture, primjer moćnijih kultura su US ili RH.
 	var pattern = System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern.ToLower();
 	pattern = pattern.Replace("DD", "D").Replace("D", "DD");
 	pattern = pattern.Replace("MM", "M").Replace("M", "MM");

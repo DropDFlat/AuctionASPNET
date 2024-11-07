@@ -3,7 +3,30 @@
 @{
 	ViewData["Title"] = "Home Page";
 }
+@section Scripts {
+	<script>
+		$(document).ready(function () {
+			$("#filter-button").on("click", function (e) {
+				e.preventDefault();
 
+				var form = $("#filter-form");
+				var url = form.attr("action");
+
+				$.ajax({
+					type: "POST",
+					url: url,
+					data: form.serialize(),
+					success: function (response) {
+						$("#index-table").html(response);
+					},
+					error: function (xhr, status, error) {
+						console.error(xhr.responseText);
+					}
+				});
+			});
+		});
+	</script>
+}
 <h1>Auction List</h1>
 <div style="margin-top: 20px; margin-bottom: 10px;">
 	<partial name="_AuctionFilter" model="new AuctionFilterModel()" />
