@@ -47,11 +47,12 @@ button.accept-policy {
   line-height: 60px;
 }
 .uploaded-files {
-    display: flex;
-    flex-wrap: wrap;
-}
 
-    .uploaded-files img {
-        max-width: 100px; /* Adjust the size as needed */
-        margin-right: 10px; /* Space between images */
-    }
+    margin-top: 10px;
+}
+img-fluid{
+    max-width: 60%;
+    height: auto;
+    margin-top: 10px;
+    margin-right: 10px;
+}

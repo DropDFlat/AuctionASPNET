@@ -13,20 +13,23 @@
 </nav>
 
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6">
+        <h2>Edit Auction</h2>
         <form asp-action="Edit">
             <input type="hidden" asp-for="AuctionId" />
             <partial name="_CreateEdit" />
             <button type="submit" class="btn btn-primary">Edit Auction</button>
         </form>
-        <div class="col-md-6">
-            <label class="control-label">File Upload</label>
+    </div>
+        <div class="col-md-4">
+            <h3>File Upload</h3>
             <form id="fileUpload" asp-controller="Auction" asp-action="UploadImage" asp-route-auctionId="@Model.AuctionId" enctype="multipart/form-data" class="dropzone"></form>
-        </div>
-        <div class="col-md-4" id="uploaded-files">
+        
+        <div id="uploaded-files">
             @Html.Partial("_ImageList", Model.Images)
         </div>
     </div>
+
 </div>
 
 @section Scripts {
@@ -35,6 +38,7 @@
     <script>
             
         Dropzone.options.fileUpload = {
+            autoProcessQueue: true,
             acceptedFiles: ".png,.jpg,.jpeg,.jfif",
             maxFiles: 100,
             success: function (file, response) {
@@ -48,6 +52,9 @@
             init: function () {
                 this.on("error", function (file, response) {
                     console.error("Dropzone error:", response);
+                });
+                this.on("addedfile", function (file) {
+                    console.log("File added via", file.upload ? "drag-and-drop" : "click-to-select", file);
                 });
                 this.on("sending", function (file, xhr, formData) {
                     console.log("Sending file:", file);
@@ -71,27 +78,28 @@
                     data: { articleId: articleId },
                     success: function (response) {
                         $('#uploaded-files').html(response);
-                        $(".deleteAttachment").on("click", function () {
-                            var attachmentId = $(this).data("id");
-
-                            $.ajax({
-                                url: "@Url.Action("DeleteAttachment", "Auction")",
-                                type: 'POST',
-                                data: { id: attachmentId, articleId: articleId },
-                                success: function (response) {
-                                    console.log("Attachment deleted:", response);
-                                    loadAttachments(articleId);
-                                },
-                                error: function (xhr, status, error) {
-                                    console.error("Delete error:", xhr.responseText);
-                                }
-                            });
-                        });
-
+                        bindDeleteEvent();
+                        
                     },
                     error: function (xhr, status, error) {
                         console.error("Error loading attachments:", xhr.responseText);
                     }
+                });
+            }
+            function bindDeleteEvent() {
+                $(".deleteAttachment").on("click", function () {
+                    var attachmentId = $(this).data("id");
+                    $.ajax({
+                        url: "@Url.Action("DeleteAttachment", "Auction")",
+                        type: 'POST',
+                        data: { id: attachmentId },
+                        success: function (response) {
+                            loadAttachments(articleId);
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("Delete error:", xhr.responseText);
+                        }
+                    });
                 });
             }
             // Function to check auction status
