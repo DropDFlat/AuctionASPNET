@@ -1,0 +1,20 @@
+﻿@model List<Aukcija>
+
+<h2>Auctions You've Created</h2>
+<div class="row">
+    <div style="margin-top: 20px; margin-bottom: 10px;">
+        <partial name="_AuctionFilter" model="new AuctionFilterModel()" />
+    </div>
+
+    @if (Model.Any())
+    {
+
+        <div id="index-table">
+            <partial name="_IndexTable" model="Model" />
+        </div>
+    }
+    else
+    {
+        <p>You don't have any auctions.</p>
+    }
+</div>

@@ -19,6 +19,7 @@ namespace Auction.Web.Controllers
 		
 		private readonly UserManager<ApplicationUser> _userManager;
 		private readonly AuctionDbContext _context;
+		private static readonly object _lock = new object();
 		public AuctionController(AuctionDbContext context, UserManager<ApplicationUser> userManager) {
             _context = context;
             _userManager = userManager;
@@ -75,6 +76,9 @@ namespace Auction.Web.Controllers
                     SellerId = user.Id
                 };
 
+                _context.Articles.Add(article);
+                await _context.SaveChangesAsync();
+
                 var auction = new Aukcija
                 {
                     Article = article,
@@ -82,10 +86,13 @@ namespace Auction.Web.Controllers
                     EndTime = model.EndTime,
 					Status = "Preparing"
                 };
-                article.AuctionId = auction.Id;
-                _context.Articles.Add(article);
+
                 _context.Aukcijas.Add(auction);
-                _context.SaveChanges();
+				await _context.SaveChangesAsync();
+
+				article.Aukcija = auction;
+				_context.Articles.Update(article);
+				await _context.SaveChangesAsync();
 
                 return RedirectToAction("Index");
             }
@@ -296,22 +303,45 @@ namespace Auction.Web.Controllers
             }
             var folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
 
-            if (!Directory.Exists(folder))
-            {
-                Directory.CreateDirectory(folder);
-            }
+			lock (_lock)
+			{
+				if (!Directory.Exists(folder))
+				{
+					Directory.CreateDirectory(folder);
+				}
+			}
             var uniqueFileName = Guid.NewGuid().ToString() + "_" + file.FileName;
             var filePath = Path.Combine(folder, uniqueFileName);
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
+			try
+			{
+				using (var stream = new FileStream(filePath, FileMode.Create))
+				{
+					await file.CopyToAsync(stream);
+                    var article = await _context.Articles
+						.Include(c => c.Images)
+						.Include(c => c.Aukcija)
+						.FirstOrDefaultAsync(c => c.Aukcija.Id == auctionId);
+
+					if(article == null)
+					{
+						return NotFound("Article not found");
+					}
+
+                    article.Images.Add(new Pic { FilePath = "/uploads/" + uniqueFileName, ArticleId = article.Id });
+                    await _context.SaveChangesAsync();
+                }
+			}catch(Exception ex)
+			{
+                Console.Error.WriteLine($"File write error: {ex.Message}");
+				return StatusCode(500, "Failed to save the file");
+
             }
 			
-			var article = await _context.Articles.Include(c => c.Images).Include(c => c.Aukcija).FirstOrDefaultAsync(c => c.Aukcija.Id == auctionId);
-			article.Images.Add(new Pic { FilePath = "/uploads/" + uniqueFileName, ArticleId = article.Id });
+			
+			
 
 
-            await _context.SaveChangesAsync();
+  
 
             return Ok(new { filePath });
         }
@@ -398,6 +428,14 @@ namespace Auction.Web.Controllers
 			};
 			return View(model);
 
+		}
+		[Authorize]
+		public IActionResult MyAuctions()
+		{
+			var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+			var myAuctions = _context.Aukcijas.Where(a => a.Article.SellerId == userId).Include(a => a.Article).ToList();
+
+			return View(myAuctions);
 		}
 		private void FillDropDownValues()
 		{
