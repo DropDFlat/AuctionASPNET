@@ -78,13 +78,21 @@ namespace Auction.Web.Controllers
 
                 _context.Articles.Add(article);
                 await _context.SaveChangesAsync();
-
+				string currentStatus;
+				if(model.StartTime <= DateTime.Now)
+				{
+					currentStatus = "Active";
+				}
+				else
+				{
+					currentStatus = "Preparing";
+				}
                 var auction = new Aukcija
                 {
                     Article = article,
                     StartTime = model.StartTime,
                     EndTime = model.EndTime,
-					Status = "Preparing"
+					Status = currentStatus
                 };
 
                 _context.Aukcijas.Add(auction);
@@ -105,7 +113,7 @@ namespace Auction.Web.Controllers
 		{
 			var auction = await _context.Aukcijas
 			.Include(a => a.Article)
-			.ThenInclude(c => c.Seller).Include(a => a.Bids).ThenInclude(b => b.AuctionUser)
+			.ThenInclude(c => c.Seller).Include(a => a.Bids).ThenInclude(b => b.Bidder)
 			.FirstOrDefaultAsync(a => a.Id == id);
 			var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 			bool isOwner = auction.Article.SellerId == userId ? true : false;
@@ -126,7 +134,7 @@ namespace Auction.Web.Controllers
 		[Authorize]
 		public async Task<IActionResult> Bid(int id)
         {
-            var auction = _context.Aukcijas.Include(a => a.Article).ThenInclude(c => c.Seller).Include(a => a.Bids).ThenInclude(b => b.AuctionUser).Where(a => a.Id == id).First();
+            var auction = _context.Aukcijas.Include(a => a.Article).ThenInclude(c => c.Seller).Include(a => a.Bids).ThenInclude(b => b.Bidder).Where(a => a.Id == id).First();
 			var user = await _userManager.GetUserAsync(User);
 			if (auction == null)
             {
@@ -139,7 +147,6 @@ namespace Auction.Web.Controllers
                 Aukcija = auction,
                 MaxBidAmount = auction.Bids.Any() ? auction.Bids.Max(b => b.BidAmount) : (decimal?)null,
                 HasExistingBid = existingBid != null
-
             };
             if (existingBid != null)
 			{
@@ -199,7 +206,7 @@ namespace Auction.Web.Controllers
 					return RedirectToAction("Bid", new { id = model.AuctionId });
 				}
 
-				var existingBid = await _context.Bids.Include(b => b.AuctionUser).FirstOrDefaultAsync(b => b.AuctionId == model.AuctionId && b.AuctionUser.Id == user.Id);
+				var existingBid = await _context.Bids.Include(b => b.Bidder).FirstOrDefaultAsync(b => b.AuctionId == model.AuctionId && b.Bidder.Id == user.Id);
 				if(existingBid != null)
 				{
 					existingBid.BidAmount = model.Amount;
@@ -213,6 +220,7 @@ namespace Auction.Web.Controllers
 						BidAmount = model.Amount,
 						AuctionId = model.AuctionId,
 						BidderId = user.Id,
+						Bidder = user,
 						PaymentMethodId = model.PaymentId
 					};
 					_context.Add(bid);
@@ -337,11 +345,6 @@ namespace Auction.Web.Controllers
 
             }
 			
-			
-			
-
-
-  
 
             return Ok(new { filePath });
         }

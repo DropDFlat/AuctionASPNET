@@ -16,13 +16,13 @@ namespace Model
 
         [ForeignKey(nameof(Auction))]
         public int AuctionId { get; set; }
+        public Aukcija Auction { get; set; }
 
-        [ForeignKey(nameof(ApplicationUser))]
+        [ForeignKey("Bidder")]
         public string BidderId { get; set; }
+        public ApplicationUser Bidder { get; set; }
         [DisplayFormat(DataFormatString = "{0:C}", ApplyFormatInEditMode = true)]
         public decimal BidAmount { get; set; }
-        public Aukcija Auction { get; set; }
-        public ApplicationUser AuctionUser { get; set; }
 
         [ForeignKey(nameof(Model.PaymentMethod))]
         public int PaymentMethodId { get; set; }

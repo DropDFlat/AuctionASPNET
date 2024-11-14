@@ -38,14 +38,9 @@ namespace Auction.Web.Models
         {
             var auction = (AuctionArticleViewModel)validationContext.ObjectInstance;
 
-            if (auction.StartTime <= DateTime.Now)
+            if (auction.EndTime <= auction.StartTime || auction.EndTime <= DateTime.Now)
             {
-                return new ValidationResult("Start date cannot be before the current date.");
-            }
-
-            if (auction.EndTime <= auction.StartTime)
-            {
-                return new ValidationResult("End date cannot be before the start date.");
+                return new ValidationResult("End date cannot be before the start date or the current date.");
             }
 
             return ValidationResult.Success;
