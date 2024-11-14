@@ -18,9 +18,8 @@ namespace Model
         public string Description { get; set; }
         [Required]
         public decimal StartingPrice { get; set; }
-
-        [ForeignKey(nameof(ApplicationUser))]
         public string SellerId { get; set; }
+        [ForeignKey(nameof(SellerId))]
         public ApplicationUser Seller { get; set; }
 
         [ForeignKey(nameof(Model.Aukcija))]

@@ -23,9 +23,9 @@ namespace Model
         public ICollection<Bid>? Bids { get; set; }
 
         public string Status { get; set; }
-        [ForeignKey(nameof(ApplicationUser))]
-        public string? WinnerId { get; set; }
 
+        public string? WinnerId { get; set; }
+        [ForeignKey("WinnerId")]
         public  ApplicationUser? Winner { get; set; }
 
 
