@@ -37,22 +37,20 @@ namespace Auction.DAL
                 .HasOne(a => a.Article)
                 .WithOne(i => i.aukcija)
                 .HasForeignKey<Aukcija>(a => a.ArticleId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // Bid -> Auction
-            modelBuilder.Entity<Bid>()
-                .HasOne(b => b.Auction)
-                .WithMany(a => a.Bids)
-                .HasForeignKey(b => b.AuctionId)
                 .OnDelete(DeleteBehavior.Restrict);*/
 			modelBuilder.Entity<Aukcija>()
 			.HasOne(a => a.Winner)
 			.WithMany()
 			.HasForeignKey(a => a.WinnerId);
+            modelBuilder.Entity<Bid>()
+            .HasOne(b => b.Bidder)
+            .WithMany(u => u.Bids)
+            .HasForeignKey(b => b.BidderId)
+            .OnDelete(DeleteBehavior.Restrict);
 
-			modelBuilder.Entity<Article>()
-        .Property(i => i.StartingPrice)
-        .HasColumnType("decimal(10, 2)");
+            modelBuilder.Entity<Article>()
+            .Property(i => i.StartingPrice)
+            .HasColumnType("decimal(10, 2)");
 
 
             modelBuilder.Entity<PaymentMethod>().HasData(new PaymentMethod { Id = 1, Name = "Paypal" });

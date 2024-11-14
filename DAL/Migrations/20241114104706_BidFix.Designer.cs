@@ -4,6 +4,7 @@ using Auction.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Auction.DAL.Migrations
 {
     [DbContext(typeof(AuctionDbContext))]
-    partial class AuctionDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241114104706_BidFix")]
+    partial class BidFix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -335,12 +338,15 @@ namespace Auction.DAL.Migrations
                     b.Property<int>("AuctionId")
                         .HasColumnType("int");
 
+                    b.Property<string>("AuctionUserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<decimal>("BidAmount")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("BidderId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("PaymentMethodId")
                         .HasColumnType("int");
@@ -349,7 +355,7 @@ namespace Auction.DAL.Migrations
 
                     b.HasIndex("AuctionId");
 
-                    b.HasIndex("BidderId");
+                    b.HasIndex("AuctionUserId");
 
                     b.HasIndex("PaymentMethodId");
 
@@ -498,11 +504,9 @@ namespace Auction.DAL.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Auction.Model.ApplicationUser", "Bidder")
+                    b.HasOne("Auction.Model.ApplicationUser", "AuctionUser")
                         .WithMany("Bids")
-                        .HasForeignKey("BidderId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .HasForeignKey("AuctionUserId");
 
                     b.HasOne("Model.PaymentMethod", "PaymentMethod")
                         .WithMany("Bids")
@@ -512,7 +516,7 @@ namespace Auction.DAL.Migrations
 
                     b.Navigation("Auction");
 
-                    b.Navigation("Bidder");
+                    b.Navigation("AuctionUser");
 
                     b.Navigation("PaymentMethod");
                 });

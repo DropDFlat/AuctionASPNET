@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Auction.Model;
+using Microsoft.AspNetCore.Mvc;
 using Model;
 using System.ComponentModel.DataAnnotations;
 
