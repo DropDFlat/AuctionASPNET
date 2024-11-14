@@ -4,6 +4,7 @@ using Auction.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Auction.DAL.Migrations
 {
     [DbContext(typeof(AuctionDbContext))]
-    partial class AuctionDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241114150406_IdFixAuction2")]
+    partial class IdFixAuction2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -257,6 +260,9 @@ namespace Auction.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<int?>("AuctionId")
                         .HasColumnType("int");
 
@@ -277,6 +283,8 @@ namespace Auction.DAL.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ApplicationUserId");
+
                     b.HasIndex("AuctionId")
                         .IsUnique()
                         .HasFilter("[AuctionId] IS NOT NULL");
@@ -293,6 +301,9 @@ namespace Auction.DAL.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("ArticleId")
                         .HasColumnType("int");
@@ -311,6 +322,8 @@ namespace Auction.DAL.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("ArticleId");
 
@@ -449,12 +462,16 @@ namespace Auction.DAL.Migrations
 
             modelBuilder.Entity("Model.Article", b =>
                 {
+                    b.HasOne("Auction.Model.ApplicationUser", null)
+                        .WithMany("Articles")
+                        .HasForeignKey("ApplicationUserId");
+
                     b.HasOne("Model.Aukcija", "Aukcija")
                         .WithOne()
                         .HasForeignKey("Model.Article", "AuctionId");
 
                     b.HasOne("Auction.Model.ApplicationUser", "Seller")
-                        .WithMany("Articles")
+                        .WithMany()
                         .HasForeignKey("SellerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -466,6 +483,10 @@ namespace Auction.DAL.Migrations
 
             modelBuilder.Entity("Model.Aukcija", b =>
                 {
+                    b.HasOne("Auction.Model.ApplicationUser", null)
+                        .WithMany("WonAuctions")
+                        .HasForeignKey("ApplicationUserId");
+
                     b.HasOne("Model.Article", "Article")
                         .WithMany()
                         .HasForeignKey("ArticleId")
@@ -473,7 +494,7 @@ namespace Auction.DAL.Migrations
                         .IsRequired();
 
                     b.HasOne("Auction.Model.ApplicationUser", "Winner")
-                        .WithMany("WonAuctions")
+                        .WithMany()
                         .HasForeignKey("WinnerId");
 
                     b.Navigation("Article");

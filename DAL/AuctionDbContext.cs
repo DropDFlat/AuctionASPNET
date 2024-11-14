@@ -27,7 +27,7 @@ namespace Auction.DAL
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-			/*modelBuilder.Entity<Article>()
+            /*modelBuilder.Entity<Article>()
                 .HasOne(i => i.Seller)
                 .WithMany(u => u.articles)
                 .HasForeignKey(i => i.SellerId)
@@ -38,19 +38,15 @@ namespace Auction.DAL
                 .WithOne(i => i.aukcija)
                 .HasForeignKey<Aukcija>(a => a.ArticleId)
                 .OnDelete(DeleteBehavior.Restrict);*/
-			modelBuilder.Entity<Aukcija>()
-			.HasOne(a => a.Winner)
-			.WithMany()
-			.HasForeignKey(a => a.WinnerId);
             modelBuilder.Entity<Bid>()
-            .HasOne(b => b.Bidder)
-            .WithMany(u => u.Bids)
-            .HasForeignKey(b => b.BidderId)
-            .OnDelete(DeleteBehavior.Restrict);
+                .HasOne(b => b.Bidder)
+                .WithMany(u => u.Bids)
+                .HasForeignKey(b => b.BidderId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Article>()
-            .Property(i => i.StartingPrice)
-            .HasColumnType("decimal(10, 2)");
+                .Property(i => i.StartingPrice)
+                .HasColumnType("decimal(10, 2)");
 
 
             modelBuilder.Entity<PaymentMethod>().HasData(new PaymentMethod { Id = 1, Name = "Paypal" });
