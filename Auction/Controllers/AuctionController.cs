@@ -259,12 +259,17 @@ namespace Auction.Web.Controllers
 			{
 				return View(viewModel);
 			}
-			var auction = _context.Aukcijas.Include(a => a.Article).First(a => a.Id == viewModel.AuctionId);
+			var auction = _context.Aukcijas.Include(a => a.Article).Include(a => a.Bids).First(a => a.Id == viewModel.AuctionId);
 			if(auction == null)
 			{
 				return NotFound();
 			}
-
+			if (viewModel.StartTime > DateTime.Now) { auction.Status = "Preparing"; }
+			if (viewModel.StartingPrice != auction.Article.StartingPrice)
+			{
+				var bidsToDelete = auction.Bids.Where(b => b.BidAmount < viewModel.StartingPrice).ToList();
+				_context.Bids.RemoveRange(bidsToDelete);
+			}
 			auction.StartTime = viewModel.StartTime;
 			auction.EndTime = viewModel.EndTime;
 			auction.Article.Name = viewModel.Name;
